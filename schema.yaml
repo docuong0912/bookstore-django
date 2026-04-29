@@ -1,0 +1,277 @@
+openapi: 3.0.3
+info:
+  title: Bookstore API
+  version: 1.0.0
+  description: API documentation for the Bookstore application
+paths:
+  /books/:
+    get:
+      operationId: books_retrieve
+      description: Retrieve a list of all books with optional search and filtering
+        parameters. Filters include price range, published date, title search, publisher,
+        status, and author.
+      summary: List Books
+      parameters:
+      - in: query
+        name: author
+        schema:
+          type: string
+        description: Filter books by author name
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date
+        description: Filter books published before this date
+      - in: query
+        name: max_price
+        schema:
+          type: string
+        description: Maximum price for filtering
+      - in: query
+        name: min_price
+        schema:
+          type: string
+        description: Minimum price for filtering
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number for pagination
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of items per page
+      - in: query
+        name: publisher
+        schema:
+          type: string
+        description: Filter books by publisher name
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date
+        description: Filter books published after this date
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Filter books by status (available, out_of_stock, discontinued)
+      - in: query
+        name: title
+        schema:
+          type: string
+        description: Search books by title
+      tags:
+      - books
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /books/create/:
+    post:
+      operationId: books_create_create
+      description: Create a new book with the provided details
+      summary: Create Book
+      tags:
+      - books
+      requestBody:
+        content:
+          title:
+            schema:
+              type: string
+          description:
+            schema:
+              type: string
+          isbn:
+            schema:
+              type: string
+          price:
+            schema:
+              type: number
+              format: float
+          published_date:
+            schema:
+              type: string
+              format: date
+          stock_quantity:
+            schema:
+              type: integer
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - ht
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
