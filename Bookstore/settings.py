@@ -29,11 +29,12 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+AUTH_USER_MODEL = 'Account.User'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'Account',
     'rest_framework',
     'drf_spectacular',
     'Book',
@@ -130,12 +131,23 @@ STATIC_URL = 'static/'
 REST_FRAMEWORK = {
     # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Bookstore API',
     'DESCRIPTION': 'API documentation for the Bookstore application',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': True,
-
+    "COMPONENTS": {
+            "securitySchemes": {
+                "BearerAuth": {
+                    "type": "http",
+                    "scheme": "bearer",
+                    "bearerFormat": "JWT",
+                }
+            }
+        },
     # OTHER SETTINGS
 }

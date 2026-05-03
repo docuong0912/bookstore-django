@@ -2,9 +2,9 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from drf_spectacular.types import OpenApiTypes
-from .serializers import UserSerializer
+from .serializers import LoginSerializer, UserSerializer
 from .models import User
 
 # ============ 1. User Registration ============
@@ -26,20 +26,23 @@ def register(request):
 @extend_schema(
     summary="User Login",
     description="Authenticate user and return admin status.",
+    request=LoginSerializer,
     responses={200: OpenApiTypes.OBJECT},
 )
+@csrf_exempt
 @api_view(['POST'])
 def user_login(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-    
-    user = authenticate(username=username, password=password)
-    if user:
-        login(request, user)
-        return JsonResponse({
-            "message": "Login successful!",
-            "is_admin": user.is_staff,
-            "username": user.username
-        })
-    return JsonResponse({"error": "Invalid username or password!"}, status=401)
+    try:
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data["user"]
+            login(request, user)
+            return JsonResponse({
+                "message": "Login successful!",
+                "is_admin": user.is_staff,
+                "username": user.username
+            })
+        return JsonResponse(serializer.errors, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
