@@ -97,7 +97,8 @@ class Book(BaseModel):
 
     def __str__(self):
         return self.title
-
+    def update(self, **kwargs):
+        self.save()
     @property
     def get_price(self):
         """Return discount price if available, otherwise return regular price"""
